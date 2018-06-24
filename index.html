@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,user-scalable=yes">
+	<title>CasperJS</title>
+	<link href="https://unpkg.com/basscss@7.1.1/css/basscss.min.css" rel="stylesheet">
+	<style>html,body{height:100vh;}</style>
+</head>
+
+<body class="flex flex-column flex-justify">
+	<header class="mb4 py2 border-bottom">
+		<div class="container px2">
+			<img class="align-middle" src="img/casper-logo.png" width="82" alt="Casper">
+		</div>
+	</header>
+
+	<section class="clearfix flex-auto container px2">
+		<div class="clearfix">
+			<div class="sm-col sm-col-6 px3">
+				<img src="img/casper-mattress.jpg" alt="">
+			</div>
+			<div class="sm-col sm-col-6 px3">
+				<h1>The Casper Mattress</h1>
+				<p>Adored. Trusted. Acclaimed.<br> Yes, we’re talking about a mattress.</p>
+
+				<form action="#" method="POST">
+					<script src="https://checkout.stripe.com/checkout.js"
+					class="stripe-button"
+					data-allow-remember-me="false"
+					data-key="pk_test_tds3O3s6ODegiycxArBvgVfb"
+					data-amount="117500"
+					data-name="Casper"
+					data-locale="auto"
+					data-currency="cad">
+				</script>
+			</form>
+		</div>
+	</div>
+</section>
+
+<footer class="mt4 px2 py2 border-top">
+	<div class="container">
+		&copy; 2018
+	</div>
+</footer>
+
+</body>
+</html>
