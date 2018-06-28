@@ -16,28 +16,30 @@ casper.test.begin('Stripe checkout test', function(test) {
 	// Start test on URL
 	casper.start('http://localhost/casperjs-meetup/', function() {
 		casper.waitForSelector('body', function success() {
+			test.assertExists('body');
 			casper.capture('stripe-test/screenshots/0-loaded.jpg');
 		}, function fail() {
-			test.assertExists('Error loading page');
+			test.fail('Error loading page');
 		});
 	});
 
 	// Get the title
 	casper.then(function() {
 		casper.waitForSelector('h1', function success() {
+			test.assertSelectorHasText('h1', 'The Casper Mattress');
 			this.echo('Product: ' + this.fetchText('h1'));
 		}, function fail() {
-			test.assertExists('No product title');
+			test.fail('No product title');
 		});
 	});
 
 	// Wait for Stripe checkout button to load
 	casper.then(function() {
 		casper.waitForSelector('.stripe-button-el', function success() {
-			this.echo('Buy button visible, clicking...');
+			this.echo('Buy button visible, clicking.');
 			this.click('.stripe-button-el');
 		}, function fail() {
-			test.assertExists('No buy button');
+			test.fail('No buy button');
 		});
 	});
 
@@ -48,26 +50,27 @@ casper.test.begin('Stripe checkout test', function(test) {
 				casper.capture('stripe-test/screenshots/1-stripe-modal.jpg');
 				this.echo('Stripe checkout modal open.');
 			});
+		}, function fail() {
+			test.fail('Stripe modal did not show');
 		});
 	});
 
 	// Fill form, this card should be declined
 	casper.then(function() {
-		this.echo('Filling checkout fields...');
 		this.page.switchToChildFrame(0); // focus iframe
+		test.assertExists('form');
+		this.echo('Filling checkout fields.');
 		this.fillSelectors('form', {
 			'input[type="email"]': 'beattyrandall@gmail.com',
 			'input[placeholder="Card number"]': '4000 0000 0000 0002',
 			'input[placeholder="MM / YY"]': '12 22',
 			'input[placeholder="CVC"]': '123',
 		}, false);
-		this.wait(1000, function() { // wait for response
-			casper.capture('stripe-test/screenshots/2-stripe-modal.jpg');
-			this.echo('Submitting checkout fields...');
+		casper.capture('stripe-test/screenshots/2-stripe-modal.jpg');
 
-			// Submit the form
-			this.click('button[type="submit"]');
-			this.wait(1000, function() { // wait for response
+		this.wait(1000, function() {
+			this.click('button[type="submit"]'); // Submit the form
+			this.wait(1500, function() { // wait for response
 				casper.capture('stripe-test/screenshots/3-stripe-modal.jpg');
 				this.echo('Declined, switching card number.');
 			});
@@ -81,11 +84,21 @@ casper.test.begin('Stripe checkout test', function(test) {
 		}, false);
 
 		this.wait(1000, function() { // wait for response
-			this.click('button[type="submit"]');
+			this.click('button[type="submit"]'); // Submit the form
 			this.wait(1500, function() {
 				casper.capture('stripe-test/screenshots/4-stripe-modal.jpg');
 				this.echo('Transaction approved.');
 			});
+		});
+	});
+
+	casper.then(function() {
+		casper.waitForSelector('.stripe-button-el:disabled', function success() {
+			test.assertExists('.stripe-button-el:disabled');
+			this.echo('Buy button is disabled');
+			casper.capture('stripe-test/screenshots/5-btn-disabled.jpg');
+		}, function fail() {
+			test.fail('Buy button still enabled');
 		});
 	});
 });
